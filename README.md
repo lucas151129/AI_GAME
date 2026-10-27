@@ -1,15 +1,16 @@
-# 星際工坊 · 學習遊戲庫
+# AI_GAME · 學習遊戲庫
 
 `AI_GAME` 是 Three.js 互動學習遊戲的入口。根目錄是大廳，`games/` 底下每個資料夾都是獨立遊戲、獨立 PWA。
 
 **線上遊戲庫：** <https://lucas151129.github.io/AI_GAME/>
 
-![星際工坊學習遊戲庫](preview-hub.png)
+![AI_GAME 學習遊戲庫](preview-hub.png)
 
 ## 遊戲
 
 | 遊戲 | 主題 | 狀態 | 路徑 |
 | --- | --- | --- | --- |
+| [動量實驗室](games/momentum/) | 動量守恆、碰撞、爆炸、文字題 | 已上線 | `/games/momentum/` |
 | [星際工坊](games/starforge/) | 座標、旋轉、縮放、光照、動畫 | 已上線 | `/games/starforge/` |
 | 光學實驗室 | 反射、折射、透鏡 | 籌備中 | — |
 | 力學實驗室 | 拋體、碰撞、動量 | 籌備中 | — |
@@ -26,6 +27,13 @@ AI_GAME/
 ├─ serve.mjs                  ← 本機大廳伺服器
 ├─ shared/                    ← 未來共用資源
 ├─ games/
+│  ├─ momentum/
+│  │  ├─ index.html
+│  │  ├─ manifest.webmanifest
+│  │  ├─ sw.js
+│  │  ├─ src/
+│  │  ├─ icons/
+│  │  └─ preview-mobile.png
 │  ├─ starforge/
 │  │  ├─ index.html
 │  │  ├─ manifest.webmanifest

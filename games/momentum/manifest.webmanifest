@@ -1,0 +1,44 @@
+{
+  "name": "動量實驗室 · Momentum Lab",
+  "short_name": "動量實驗室",
+  "description": "用 3D 碰撞學動量守恆：完全非彈性、非彈性、彈性碰撞與爆炸，附文字題考試模式。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "orientation": "landscape",
+  "background_color": "#05080d",
+  "theme_color": "#05080d",
+  "categories": ["education", "games"],
+  "screenshots": [
+    {
+      "src": "./preview-mobile.png",
+      "sizes": "844x390",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
