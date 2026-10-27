@@ -1,0 +1,34 @@
+{
+  "games": [
+    {
+      "slug": "starforge",
+      "title": "星際工坊",
+      "kicker": "THREE.JS / 3D / 5 LEVELS",
+      "description": "漂浮在軌道上的天文台失去能量。調整座標、旋轉、縮放、燈光與軌道動畫，修復五件展品，讓星核重新啟動。",
+      "path": "games/starforge/",
+      "preview": "games/starforge/preview-mobile.png",
+      "status": "live",
+      "tags": ["座標", "旋轉", "縮放", "光照", "動畫"],
+      "meta": "5 關 · 約 8 分鐘",
+      "cta": "進入實驗室"
+    },
+    {
+      "slug": "optics",
+      "title": "光學實驗室",
+      "kicker": "OPTICS / 2D + 3D",
+      "description": "用可拖曳的光源、透鏡與屏幕，觀察反射、折射與成像位置。",
+      "status": "soon",
+      "tags": ["反射", "折射", "透鏡"],
+      "meta": "光學 · 籌備中"
+    },
+    {
+      "slug": "mechanics",
+      "title": "力學實驗室",
+      "kicker": "MECHANICS / PHYSICS SANDBOX",
+      "description": "拋體、碰撞與動量守恆，讓公式在 3D 場景裡直接發生。",
+      "status": "soon",
+      "tags": ["力學", "碰撞", "能量"],
+      "meta": "物理 · 籌備中"
+    }
+  ]
+}

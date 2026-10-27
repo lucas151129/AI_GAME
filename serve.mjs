@@ -4,7 +4,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)));
-const port = Number(process.env.PORT) || 8137;
+const port = Number(process.env.PORT) || 8140;
 const host = process.env.HOST || '127.0.0.1';
 
 const mimeTypes = {
@@ -65,5 +65,5 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`星際工坊 running at http://${host}:${port}`);
+  console.log(`星際工坊學習遊戲庫 running at http://${host}:${port}`);
 });
