@@ -2,7 +2,7 @@
   "games": [
     {
       "slug": "momentum",
-      "title": "動量實驗室",
+      "title": "動量碰撞模擬器",
       "kicker": "MOMENTUM / PHYSICS / 4 SCENARIOS",
       "description": "用 3D 碰撞理解動量守恆：完全非彈性、非彈性、彈性碰撞與爆炸，附文字題考試模式。",
       "path": "games/momentum/",
@@ -10,7 +10,7 @@
       "status": "live",
       "tags": ["動量", "碰撞", "爆炸", "考試"],
       "meta": "4 情景 · 考試模式",
-      "cta": "進入實驗室"
+      "cta": "進入模擬器"
     },
     {
       "slug": "starforge",

@@ -1,6 +1,6 @@
 {
-  "name": "動量實驗室 · Momentum Lab",
-  "short_name": "動量實驗室",
+  "name": "動量碰撞模擬器 · Momentum Collision",
+  "short_name": "動量碰撞",
   "description": "用 3D 碰撞學動量守恆：完全非彈性、非彈性、彈性碰撞與爆炸，附文字題考試模式。",
   "lang": "zh-Hant",
   "dir": "ltr",

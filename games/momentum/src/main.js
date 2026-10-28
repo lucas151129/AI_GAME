@@ -9,8 +9,12 @@ import {
 } from './physics.js';
 import { SCENARIOS, SCENARIO_ORDER, scenarioFor, defaultInputs } from './scenarios.js';
 import { EXAM_TYPES, generateQuestion, checkAnswers } from './exam.js';
+import { initLanguage, localizeDom } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
+const isEmbedded =
+  new URLSearchParams(window.location.search).get('embed') === '1' ||
+  window.parent !== window;
 
 const refs = {
   app: $('app'),
@@ -116,6 +120,7 @@ const state = {
     question: null,
     solutionOpen: false,
   },
+  completedScenarios: new Set(),
 };
 
 let scene;
@@ -207,6 +212,7 @@ function setScenario(id) {
   updateAll();
   applySceneTheme(scenario.accent);
   if (!isWideLayout() && state.view === 'analysis') setView('lab');
+  localizeDom();
 }
 
 function syncControlVisibility() {
@@ -308,6 +314,7 @@ function renderPrediction() {
   refs.predictionFeedback.textContent = '';
   refs.predictionFeedback.className = 'prediction-feedback';
   syncRunButton();
+  localizeDom();
 }
 
 function syncRunButton() {
@@ -388,6 +395,7 @@ function resetSimulation() {
   resetEffects();
   updateVisuals();
   syncRunButton();
+  localizeDom();
 }
 
 function runSimulation() {
@@ -458,6 +466,7 @@ function revealResult(label) {
   showPredictionResult();
   renderData();
   updateEquation();
+  localizeDom();
 }
 
 function finishSimulation() {
@@ -467,7 +476,15 @@ function finishSimulation() {
   refs.stageStatus.textContent = '完成';
   refs.stageStatus.classList.remove('is-running');
   if (!state.revealed) revealResult('完成');
+
+  const scenario = scenarioFor(state.scenario);
+  if (state.predicted === scenario.prediction.correct) {
+    state.completedScenarios.add(state.scenario);
+    reportPlatformScore();
+  }
+
   updateAll();
+  localizeDom();
 }
 
 function updateSimulation(dt) {
@@ -518,6 +535,7 @@ function updateAll() {
   updateEquation();
   syncRunButton();
   showPredictionResult();
+  localizeDom();
 }
 
 /* ---------- data / equations ---------- */
@@ -770,8 +788,26 @@ function updateEquation() {
 function toast(message, duration = 3800) {
   window.clearTimeout(toastTimer);
   refs.toast.textContent = message;
+  localizeDom(refs.toast);
   refs.toast.classList.add('is-visible');
   toastTimer = window.setTimeout(() => refs.toast.classList.remove('is-visible'), duration);
+}
+
+/* One point per scenario completed after a correct prediction. */
+function reportPlatformScore() {
+  if (!isEmbedded) return;
+  try {
+    window.parent.postMessage(
+      {
+        type: 'game-score',
+        score: state.completedScenarios.size,
+        metadata: { game: 'momentum' },
+      },
+      window.location.origin,
+    );
+  } catch (error) {
+    // Not framed by the FunLearning host.
+  }
 }
 
 function isWideLayout() {
@@ -879,6 +915,7 @@ function newExamQuestion(type = state.exam.type) {
   refs.examSolutionBtn.textContent = '顯示解法';
   refs.examCheck.disabled = false;
   refs.examCheck.focus({ preventScroll: true });
+  localizeDom();
 }
 
 function openExam() {
@@ -913,6 +950,7 @@ function checkExam() {
   if (outcome.correct) {
     refs.examFeedback.className = 'exam-feedback is-good';
     refs.examFeedback.textContent = `✓ 全部正確。${question.tip}`;
+    localizeDom();
     return;
   }
 
@@ -929,6 +967,7 @@ function checkExam() {
     refs.examFeedback.textContent =
       '尚未完全正確。先檢查：正方向、總動量、單位，以及是否有把動能守恆錯用在非彈性碰撞。';
   }
+  localizeDom();
 }
 
 function toggleExamSolution() {
@@ -939,6 +978,7 @@ function toggleExamSolution() {
     state.exam.solutionOpen = false;
     refs.examSolution.hidden = true;
     refs.examSolutionBtn.textContent = '顯示解法';
+    localizeDom();
     return;
   }
 
@@ -959,6 +999,7 @@ function toggleExamSolution() {
   tip.textContent = `考試提示：${question.tip}`;
   refs.examSolution.append(title, list, tip);
   refs.examSolutionBtn.textContent = '收起解法';
+  localizeDom();
 }
 
 function showExamHint() {
@@ -966,6 +1007,7 @@ function showExamHint() {
   if (!question) return;
   refs.examFeedback.className = 'exam-feedback';
   refs.examFeedback.textContent = `提示：${question.steps[0]}`;
+  localizeDom();
 }
 
 /* ---------- Three.js ---------- */
@@ -1475,6 +1517,7 @@ function bindEvents() {
 }
 
 function setupPWA() {
+  if (isEmbedded) return;
   if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {
@@ -1485,6 +1528,8 @@ function setupPWA() {
 }
 
 function init() {
+  document.body.classList.toggle('is-embed', isEmbedded);
+  initLanguage();
   createScenarioTabs();
   setupExamTypes();
   bindEvents();
@@ -1501,6 +1546,8 @@ function init() {
       phase: state.phase,
       inputs: { ...state.inputs },
       result: state.result ? { ...state.result } : null,
+      completed: [...state.completedScenarios],
+      language: document.documentElement.lang,
     }),
     getExamQuestion: () => state.exam.question,
     setScenario,

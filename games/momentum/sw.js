@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'momentum-v2';
+const CACHE_VERSION = 'momentum-v3';
 const CACHE_PREFIX = 'momentum-';
 const BASE = new URL('./', self.location.href);
 
@@ -8,6 +8,7 @@ const APP_SHELL = [
   'style.css',
   'manifest.webmanifest',
   'src/main.js',
+  'src/i18n.js',
   'src/physics.js',
   'src/scenarios.js',
   'src/exam.js',

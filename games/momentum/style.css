@@ -177,6 +177,36 @@ svg {
   flex: 0 0 auto;
 }
 
+.lang-switch {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  min-height: 38px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.lang-switch button {
+  min-width: 28px;
+  min-height: 32px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-switch button.is-active {
+  background: var(--accent);
+  color: #041014;
+}
+
 .icon-btn,
 .header-btn {
   display: inline-flex;
@@ -1910,6 +1940,23 @@ input[type="range"]::-moz-range-thumb {
 
   .prediction-option {
     font-size: 11px;
+  }
+}
+
+/* ---------- Embedded in FunLearning ---------- */
+/* The host already shows the game title and back navigation. */
+body.is-embed .brand {
+  display: none;
+}
+
+body.is-embed .app-header {
+  justify-content: flex-end;
+}
+
+@media (max-width: 360px) {
+  .lang-switch button {
+    min-width: 24px;
+    padding: 0 4px;
   }
 }
 

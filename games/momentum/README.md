@@ -1,4 +1,4 @@
-# 動量實驗室 · Momentum Lab
+# 動量碰撞模擬器 · Momentum Collision
 
 以 **3D 碰撞** 學習高中物理「動量」的互動模擬器。目標不是讓學生看動畫，而是讓學生走完真正的解題流程：
 
@@ -7,7 +7,7 @@
 **線上遊玩：** <https://lucas151129.github.io/AI_GAME/games/momentum/>
 **遊戲庫：** <https://lucas151129.github.io/AI_GAME/>
 
-![動量實驗室](preview-mobile.png)
+![動量碰撞模擬器](preview-mobile.png)
 
 ## 四個必考情景
 
@@ -81,7 +81,7 @@
 - Three.js r170（本地 `vendor/`，無需連網）
 - 原生 ES Modules，無打包工具
 - 自製 1D 動量／碰撞核心，固定 1/120 秒時間步
-- 自己的 `manifest.webmanifest`、`sw.js`、cache `momentum-v2`
+- 自己的 `manifest.webmanifest`、`sw.js`、cache `momentum-v3`
 - PWA：可獨立安裝、離線載入
 - 繁體中文、手機／iPad／桌面
 - 手機直向、手機橫向、iPad 直向、iPad 橫向都有獨立版面

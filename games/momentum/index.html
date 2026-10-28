@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="動量實驗室" />
-  <meta name="description" content="動量實驗室：用手機或 iPad 學動量守恆、完全非彈性、非彈性、彈性碰撞與爆炸，附文字題考試模式。" />
-  <title>動量實驗室 · Momentum Lab</title>
+  <meta name="apple-mobile-web-app-title" content="動量碰撞模擬器" />
+  <meta name="description" content="動量碰撞模擬器：用手機或 iPad 學動量守恆、完全非彈性、非彈性、彈性碰撞與爆炸，附文字題考試模式。" />
+  <title>動量碰撞模擬器 · Momentum Collision</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" href="./icons/favicon-32.png" />
@@ -26,11 +26,15 @@
           </svg>
         </span>
         <span class="brand-copy">
-          <span class="brand-kicker">MOMENTUM LAB</span>
-          <span class="brand-name">動量實驗室</span>
+          <span class="brand-kicker">MOMENTUM COLLISION</span>
+          <span class="brand-name">動量碰撞模擬器</span>
         </span>
       </a>
       <div class="header-actions">
+        <div class="lang-switch" id="langSwitch" role="group" aria-label="語言切換">
+          <button type="button" data-lang="zh-Hant" class="is-active" aria-pressed="true">繁</button>
+          <button type="button" data-lang="zh-Hans" aria-pressed="false">简</button>
+        </div>
         <button class="header-btn" id="examBtn" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
           <span>考試</span>
