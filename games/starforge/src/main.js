@@ -86,6 +86,7 @@ const audio = new SoundEngine();
 const game = {
   phase: 'intro',
   index: 0,
+  restored: new Set(),
   values: {},
   controlMap: {},
   runtime: null,
@@ -131,6 +132,11 @@ const isStandalone =
   window.matchMedia('(display-mode: fullscreen)').matches ||
   window.matchMedia('(display-mode: minimal-ui)').matches ||
   navigator.standalone === true;
+/* FunLearning loads games with ?embed=1 inside a same-origin iframe.
+   The host owns the page chrome, fullscreen and install flow. */
+const isEmbedded =
+  new URLSearchParams(window.location.search).get('embed') === '1' ||
+  window.parent !== window;
 const isIOS =
   /iphone|ipad|ipod/i.test(navigator.userAgent) ||
   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -187,7 +193,25 @@ function haptic(pattern = 8) {
 
 function setInstallAvailable(available) {
   game.installAvailable = available;
-  document.body.classList.toggle('can-install', available && !isStandalone);
+  document.body.classList.toggle('can-install', available && !isStandalone && !isEmbedded);
+}
+
+/* The host maps score / maxScore to a percentage for its leaderboard.
+   One point per restored exhibit, so maxScore is 5. */
+function reportPlatformScore() {
+  if (!isEmbedded) return;
+  try {
+    window.parent.postMessage(
+      {
+        type: 'game-score',
+        score: game.restored.size,
+        metadata: { game: 'starforge' },
+      },
+      window.location.origin,
+    );
+  } catch (error) {
+    // Nothing to report to when the page is not actually framed.
+  }
 }
 
 function fullscreenElement() {
@@ -212,6 +236,7 @@ function showFullscreenHelp() {
 }
 
 async function requestFullscreenForGame() {
+  if (isEmbedded) return false;
   const element = document.documentElement;
   const request = element.requestFullscreen || element.webkitRequestFullscreen;
   if (!request) return false;
@@ -257,6 +282,11 @@ function updateViewportMode() {
 
 function setupPWA() {
   document.body.classList.toggle('is-standalone', isStandalone);
+  document.body.classList.toggle('is-embed', isEmbedded);
+  if (isEmbedded) {
+    setInstallAvailable(false);
+    return;
+  }
   if (isStandalone) {
     setInstallAvailable(false);
     return;
@@ -286,6 +316,7 @@ function setupPWA() {
 }
 
 async function installApp() {
+  if (isEmbedded) return;
   audio.click();
   haptic(8);
   if (game.deferredInstallPrompt) {
@@ -309,7 +340,7 @@ async function installApp() {
 }
 
 function openIosChoice() {
-  if (!refs.iosChoice) return;
+  if (!refs.iosChoice || isEmbedded) return;
   refs.iosChoice.hidden = false;
   refs.choiceOptions.hidden = false;
   refs.choiceSteps.hidden = true;
@@ -350,6 +381,10 @@ function chooseIosBrowser() {
 
 function handleStartRequest() {
   if (game.phase !== 'intro' || !world || isPortraitTouch()) return;
+  if (isEmbedded) {
+    startGame();
+    return;
+  }
   if (isIOS && !isStandalone) {
     openIosChoice();
     return;
@@ -663,6 +698,8 @@ function completeLevel() {
   refreshCode();
   level.syncUI?.(runtime, game.values);
   setProgress(1, '展品已修復', true);
+  game.restored.add(game.index);
+  reportPlatformScore();
 
   audio.success();
   haptic([18, 35, 24]);
@@ -1165,6 +1202,7 @@ function installDebugAPI() {
       index: game.index,
       values: { ...game.values },
       progress: game.lastProgress,
+      restored: [...game.restored],
       completeOpen: !refs.completeOverlay.hidden,
       finaleOpen: !refs.finaleOverlay.hidden,
     }),

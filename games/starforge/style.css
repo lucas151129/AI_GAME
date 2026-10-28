@@ -3995,6 +3995,21 @@ body.is-standalone .fullscreen-btn {
   }
 }
 
+/* ---------- Embedded in FunLearning ---------- */
+/* The host already supplies the page title, fullscreen control and PWA
+   install flow. Keep the game's own HUD, but remove duplicate chrome. */
+body.is-embed .brand,
+body.is-embed .install-btn,
+body.is-embed .install-intro,
+body.is-embed .fullscreen-btn,
+body.is-embed #iosChoice {
+  display: none !important;
+}
+
+body.is-embed .intro-meta span:last-child {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
