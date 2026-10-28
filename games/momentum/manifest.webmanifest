@@ -9,14 +9,26 @@
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen"],
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#05080d",
   "theme_color": "#05080d",
   "categories": ["education", "games"],
   "screenshots": [
     {
+      "src": "./preview-phone.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
       "src": "./preview-mobile.png",
       "sizes": "844x390",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./preview-ipad.png",
+      "sizes": "1024x768",
       "type": "image/png",
       "form_factor": "wide"
     }

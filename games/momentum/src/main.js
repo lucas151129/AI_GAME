@@ -16,6 +16,9 @@ const refs = {
   app: $('app'),
   scene: $('scene'),
   stage: $('stage'),
+  appMain: $('appMain'),
+  labScreen: $('labScreen'),
+  labScenarioDesc: $('labScenarioDesc'),
   scenarioTabs: $('scenarioTabs'),
   scenarioTitle: $('scenarioTitle'),
   scenarioDesc: $('scenarioDesc'),
@@ -47,6 +50,12 @@ const refs = {
   stageResult: $('stageResult'),
   hudM1: $('hudM1'),
   hudM2: $('hudM2'),
+  summaryM1: $('summaryM1'),
+  summaryM2: $('summaryM2'),
+  summaryU1: $('summaryU1'),
+  summaryU2: $('summaryU2'),
+  summaryExtra: $('summaryExtra'),
+  summaryExtraLabel: $('summaryExtraLabel'),
   beforeSummary: $('beforeSummary'),
   afterSummary: $('afterSummary'),
   momentumBars: $('momentumBars'),
@@ -77,13 +86,19 @@ const refs = {
   setupPanel: $('setupPanel'),
   analysisPanel: $('analysisPanel'),
   scrim: $('scrim'),
-  controlToggle: $('controlToggle'),
-  analysisToggle: $('analysisToggle'),
+  adjustBtn: $('adjustBtn'),
+  closeControls: $('closeControls'),
+  sheetDone: $('sheetDone'),
+  bottomNav: $('bottomNav'),
+  labNav: $('labNav'),
+  analysisNav: $('analysisNav'),
+  examNav: $('examNav'),
   toast: $('toast'),
 };
 
 const state = {
   scenario: 'perfectly-inelastic',
+  view: 'lab',
   inputs: defaultInputs('perfectly-inelastic'),
   phase: 'idle',
   predicted: null,
@@ -161,6 +176,7 @@ function setScenario(id) {
   const scenario = scenarioFor(id);
   refs.app.dataset.scenario = id;
   refs.scenarioTitle.textContent = scenario.label;
+  refs.labScenarioDesc.textContent = scenario.description;
   refs.scenarioDesc.textContent = scenario.description;
   refs.scenarioConcept.textContent = scenario.concept;
   refs.scenarioTip.textContent = scenario.examTip;
@@ -190,6 +206,7 @@ function setScenario(id) {
   resetSimulation();
   updateAll();
   applySceneTheme(scenario.accent);
+  if (!isWideLayout() && state.view === 'analysis') setView('lab');
 }
 
 function syncControlVisibility() {
@@ -208,6 +225,17 @@ function syncInputLabels() {
   refs.energyVal.textContent = `${fmt(inputs.energy, 0)} J`;
   refs.hudM1.textContent = `${fmt(inputs.m1, 1)} kg`;
   refs.hudM2.textContent = `${fmt(inputs.m2, 1)} kg`;
+  refs.summaryM1.textContent = `${fmt(inputs.m1, 1)} kg`;
+  refs.summaryM2.textContent = `${fmt(inputs.m2, 1)} kg`;
+  refs.summaryU1.textContent = `${signed(inputs.u1, 1)} m/s`;
+  refs.summaryU2.textContent = `${signed(inputs.u2, 1)} m/s`;
+  if (state.scenario === 'explosion') {
+    refs.summaryExtraLabel.textContent = 'E';
+    refs.summaryExtra.textContent = `${fmt(inputs.energy, 0)} J`;
+  } else {
+    refs.summaryExtraLabel.textContent = 'e';
+    refs.summaryExtra.textContent = fmt(inputs.e, 2);
+  }
 
   for (const input of [refs.m1, refs.m2, refs.u1, refs.u2, refs.e, refs.energy]) {
     updateRangeFill(input);
@@ -348,11 +376,10 @@ function resetSimulation() {
   refs.stageHint.textContent =
     state.scenario === 'explosion'
       ? '爆炸前靜止；先預測碎片方向。'
-      : window.innerWidth <= 1280
-        ? '點右上「控制」設定質量與速度，先預測，再開始。'
-        : '設定質量與速度，先預測，再開始。';
+      : '先選下方預測，再開始。';
   refs.predictionFeedback.textContent = '';
   refs.predictionFeedback.className = 'prediction-feedback';
+  refs.analysisNav.classList.remove('has-update');
   for (const option of refs.predictionOptions.querySelectorAll('.prediction-option')) {
     option.disabled = false;
     option.classList.remove('is-correct', 'is-wrong');
@@ -365,8 +392,9 @@ function resetSimulation() {
 
 function runSimulation() {
   if (state.predicted === null) {
-    if (window.innerWidth <= 1280) openPanel('setup');
-    toast('先在「控制」面板選一個預測，再開始模擬。');
+    const card = refs.predictionOptions.closest('.prediction-card');
+    card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('先選一個預測，再開始模擬。');
     return;
   }
   if (state.phase === 'running') return;
@@ -426,6 +454,7 @@ function revealResult(label) {
     refs.stageResult.textContent =
       `Σp 前 = ${fmt(state.result.pBefore)} → 後 = ${fmt(state.result.pAfter)} kg·m/s · ΔKE = ${fmt(state.result.keLoss)} J`;
   }
+  if (state.view !== 'analysis') refs.analysisNav.classList.add('has-update');
   showPredictionResult();
   renderData();
   updateEquation();
@@ -745,20 +774,51 @@ function toast(message, duration = 3800) {
   toastTimer = window.setTimeout(() => refs.toast.classList.remove('is-visible'), duration);
 }
 
-function openPanel(panel) {
-  if (window.innerWidth > 1280) return;
-  refs.setupPanel.classList.toggle('is-open', panel === 'setup');
-  refs.analysisPanel.classList.toggle('is-open', panel === 'analysis');
-  refs.scrim.hidden = false;
-  document.body.classList.add('panel-open');
+function isWideLayout() {
+  return window.innerWidth >= 1024;
 }
 
-function closePanels() {
-  refs.setupPanel.classList.remove('is-open');
-  refs.analysisPanel.classList.remove('is-open');
-  refs.scrim.hidden = true;
-  document.body.classList.remove('panel-open');
+function openControls() {
+  if (isWideLayout()) {
+    refs.setupPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  refs.setupPanel.classList.add('is-open');
+  refs.scrim.hidden = false;
+  document.body.classList.add('sheet-open');
 }
+
+function closeControls() {
+  refs.setupPanel.classList.remove('is-open');
+  refs.scrim.hidden = true;
+  document.body.classList.remove('sheet-open');
+}
+
+function setNavActive(view) {
+  for (const button of [refs.labNav, refs.analysisNav, refs.examNav]) {
+    button.classList.toggle('is-active', button.dataset.view === view);
+  }
+}
+
+function setView(view) {
+  if (view !== 'lab' && view !== 'analysis') return;
+  state.view = view;
+  closeControls();
+
+  if (isWideLayout()) {
+    refs.labScreen.hidden = false;
+    refs.analysisPanel.hidden = false;
+    refs.appMain.scrollTop = 0;
+  } else {
+    refs.labScreen.hidden = view !== 'lab';
+    refs.analysisPanel.hidden = view !== 'analysis';
+    refs.appMain.scrollTop = 0;
+  }
+
+  setNavActive(view);
+  refs.analysisNav.classList.remove('has-update');
+}
+
 
 /* ---------- exam ---------- */
 
@@ -822,7 +882,9 @@ function newExamQuestion(type = state.exam.type) {
 }
 
 function openExam() {
+  closeControls();
   refs.examModal.hidden = false;
+  setNavActive('exam');
   if (!state.exam.question || state.exam.type !== state.scenario) {
     newExamQuestion(state.scenario);
   } else {
@@ -832,6 +894,7 @@ function openExam() {
 
 function closeExam() {
   refs.examModal.hidden = true;
+  setNavActive(state.view);
 }
 
 function checkExam() {
@@ -1379,15 +1442,17 @@ function bindEvents() {
     if (event.target === refs.guideModal) refs.guideModal.hidden = true;
   });
 
-  refs.controlToggle.addEventListener('click', () => openPanel('setup'));
-  refs.analysisToggle.addEventListener('click', () => openPanel('analysis'));
-  refs.scrim.addEventListener('click', closePanels);
-  for (const button of document.querySelectorAll('[data-close-panel]')) {
-    button.addEventListener('click', closePanels);
-  }
+  refs.adjustBtn.addEventListener('click', openControls);
+  refs.closeControls.addEventListener('click', closeControls);
+  refs.sheetDone.addEventListener('click', closeControls);
+  refs.scrim.addEventListener('click', closeControls);
+  refs.labNav.addEventListener('click', () => setView('lab'));
+  refs.analysisNav.addEventListener('click', () => setView('analysis'));
+  refs.examNav.addEventListener('click', openExam);
 
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 1280) closePanels();
+    if (isWideLayout()) closeControls();
+    setView(state.view);
     resizeScene();
   });
 
@@ -1401,7 +1466,11 @@ function bindEvents() {
       refs.guideModal.hidden = true;
       return;
     }
-    closePanels();
+    if (refs.setupPanel.classList.contains('is-open')) {
+      closeControls();
+      return;
+    }
+    if (!isWideLayout() && state.view === 'analysis') setView('lab');
   });
 }
 
@@ -1421,6 +1490,7 @@ function init() {
   bindEvents();
   setupScene();
   setScenario('perfectly-inelastic');
+  setView('lab');
   setupPWA();
 
   window.__MOMENTUM__ = {

@@ -84,7 +84,8 @@
 - 自己的 `manifest.webmanifest`、`sw.js`、cache `momentum-v1`
 - PWA：可獨立安裝、離線載入
 - 繁體中文、手機／iPad／桌面
-- 手機橫向優先；直向顯示旋轉提示
+- 手機直向、手機橫向、iPad 直向、iPad 橫向都有獨立版面
+- 手機以底部導航（實驗／分析／考試）操作；iPad 橫向自動變成雙欄
 
 ## 本機預覽
 
@@ -107,6 +108,8 @@ games/momentum/
 ├─ manifest.webmanifest
 ├─ sw.js
 ├─ preview-mobile.png
+├─ preview-phone.png
+├─ preview-ipad.png
 ├─ icons/
 │  ├─ icon-192.png
 │  ├─ icon-512.png
