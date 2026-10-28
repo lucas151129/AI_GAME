@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'momentum-v1';
+const CACHE_VERSION = 'momentum-v2';
 const CACHE_PREFIX = 'momentum-';
 const BASE = new URL('./', self.location.href);
 

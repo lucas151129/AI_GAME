@@ -81,7 +81,7 @@
 - Three.js r170（本地 `vendor/`，無需連網）
 - 原生 ES Modules，無打包工具
 - 自製 1D 動量／碰撞核心，固定 1/120 秒時間步
-- 自己的 `manifest.webmanifest`、`sw.js`、cache `momentum-v1`
+- 自己的 `manifest.webmanifest`、`sw.js`、cache `momentum-v2`
 - PWA：可獨立安裝、離線載入
 - 繁體中文、手機／iPad／桌面
 - 手機直向、手機橫向、iPad 直向、iPad 橫向都有獨立版面
