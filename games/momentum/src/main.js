@@ -1488,8 +1488,10 @@ function init() {
   createScenarioTabs();
   setupExamTypes();
   bindEvents();
-  setupScene();
   setScenario('perfectly-inelastic');
+  setupScene();
+  syncInputLabels();
+  applySceneTheme(scenarioFor(state.scenario).accent);
   setView('lab');
   setupPWA();
 
